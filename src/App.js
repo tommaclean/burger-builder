@@ -1,11 +1,13 @@
 import React from 'react';
 
-
+import Layout from './components/Layout/Layout'
 
 function App() {
   return (
     <div>
-      Bob's Burger Builder
+      <Layout>
+        <p>Layout!</p>
+      </Layout>
     </div>
   );
 }
