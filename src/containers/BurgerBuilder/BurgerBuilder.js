@@ -11,7 +11,7 @@ const INGREDIENT_PRICES = {
   bacon: 0.7
 }
 class BurgerBuilder extends Component {
-
+ 
   state = {
     ingredients: {
       salad: 0,
@@ -39,21 +39,37 @@ class BurgerBuilder extends Component {
 
   removeIngredientHandler = (type) => {
     const oldCount = this.state.ingredients[type]
-    const updatedCount = oldCount + 1
+    // If the ingredient count is 0, simply return so nothing happens when trying to remove more.
+    if (oldCount <= 0) {
+      return
+    }
+    const updatedCount = oldCount - 1
     const updatedIngredients = {
       ...this.state.ingredients
     }
     updatedIngredients[type] = updatedCount
-    const priceAddition = INGREDIENT_PRICES[type]
+    const priceDeduction = INGREDIENT_PRICES[type]
     const oldPrice = this.state.totalPrice
-    const newPrice = oldPrice + priceAddition
+    const newPrice = oldPrice - priceDeduction
     this.setState({totalPrice: newPrice, ingredients: updatedIngredients})
   }
   render () {
+    const disabledInfo = {
+      ...this.state.ingredients
+    }
+    // Iterating though the ingredient count to determine whether or not to display the "less" button. Will return a true or false.
+    for (let key in disabledInfo) {
+      disabledInfo[key] = disabledInfo <= 0
+    }
     return (
       <Aux>
         <Burger ingredients={this.state.ingredients}/>
-        <BuildControls ingredientAdded={this.addIngredientHandler}/>
+        <BuildControls 
+          ingredientAdded={this.addIngredientHandler}
+          ingredientRemoved={this.removeIngredientHandler}
+          disabledInfo={disabledInfo}
+          price={this.state.totalPrice}
+          />
       </Aux>
     )
   }
