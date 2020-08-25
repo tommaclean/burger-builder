@@ -2,15 +2,8 @@ import React from 'react'
 
 import classes from './BuildControl.module.css'
 
-const ConsoleLog = ({ children }) => {
-  console.log(children);
-  return false;
-};
-
 const buildControl = (props) => (
- 
   <div className={classes.BuildControl}>
-    <ConsoleLog>{ props }</ConsoleLog>
     <div className={classes.Label}>{props.label}</div>
     <button 
       className={classes.Less} 

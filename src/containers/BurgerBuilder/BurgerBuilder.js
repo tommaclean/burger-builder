@@ -19,10 +19,20 @@ class BurgerBuilder extends Component {
       cheese: 0,
       meat: 0
     },
-    totalPrice: 4
+    totalPrice: 4,
+    purchasable: false
   }
 
-
+  updatePurchaseState (ingredients) {
+    const sum = Object.keys( ingredients )
+        .map( igKey => {
+            return ingredients[igKey];
+        } )
+        .reduce( ( sum, el ) => {
+            return sum + el;
+        }, 0 );
+    this.setState( { purchasable: sum > 0 } );
+}
   // Rewrite this function to have less lines. Max says in the video that it can be done
   addIngredientHandler = (type) => {
     const oldCount = this.state.ingredients[type]
@@ -35,6 +45,7 @@ class BurgerBuilder extends Component {
     const oldPrice = this.state.totalPrice
     const newPrice = oldPrice + priceAddition
     this.setState({totalPrice: newPrice, ingredients: updatedIngredients})
+    this.updatePurchaseState(updatedIngredients)
   }
 
   removeIngredientHandler = (type) => {
@@ -52,22 +63,23 @@ class BurgerBuilder extends Component {
     const oldPrice = this.state.totalPrice
     const newPrice = oldPrice - priceDeduction
     this.setState({totalPrice: newPrice, ingredients: updatedIngredients})
+    this.updatePurchaseState(updatedIngredients)
   }
   render () {
     const disabledInfo = {
       ...this.state.ingredients
-    }
-    // Iterating though the ingredient count to determine whether or not to display the "less" button. Will return a true or false.
-    for (let key in disabledInfo) {
-      disabledInfo[key] = disabledInfo <= 0
-    }
+  };
+  for ( let key in disabledInfo ) {
+      disabledInfo[key] = disabledInfo[key] <= 0
+  }
     return (
       <Aux>
         <Burger ingredients={this.state.ingredients}/>
         <BuildControls 
           ingredientAdded={this.addIngredientHandler}
           ingredientRemoved={this.removeIngredientHandler}
-          disabledInfo={disabledInfo}
+          disabled={disabledInfo}
+          purchasable={this.state.purchasable}
           price={this.state.totalPrice}
           />
       </Aux>
